@@ -1,0 +1,58 @@
+\section{Discussion and limitations}
+\label{sec:discussion}
+
+\paragraph{What the result shows.} On the pre-registered benchmark, the structure of a
+Hanner group buys speed and memory at a cost in accuracy that stays within the margin of
+$\pm0.5$ points over all 138 datasets: \hh{} is practically equivalent to Hydra and
+$11.2\times$ faster. It
+does not buy accuracy. \hh{} is practically equivalent to both matched controls on every
+subset and every metric, so the tree adds no measurable accuracy over random ternary
+groups of the same size and sparsity; its contribution is the cost of finding the winner. Nor is \hh{} a more accurate classifier than the state of the art: MultiRocket and
+HIVE-COTE~2.0 are practically better on the UCR datasets (Table~\ref{tab:published}).
+
+\paragraph{The UEA gap.} On the 26 UEA datasets, \hh{} is 0.54 points behind Hydra and
+\emph{not worse} is not shown. The gap is concentrated on the 7 datasets with at least 18
+channels ($-1.19$ points; PEMS-SF $-3.08$) and smaller on the other 19 ($-0.30$, including
+the largest single loss, AtrialFibrillation with $-4.89$ on 15 test cases). The symmetric
+control has the same gap on the same 7 datasets ($-1.15$), so the gap comes with ternary
+groups of this kind, not with the tree. Larger channel subsets do not close it (the ablation
+is inconclusive on 7 datasets), and in an exploratory diagnosis on development datasets
+before the freeze, Hydra stayed ahead when it saw the same number of channel draws as
+\hh{}. Both point to the groups or their features rather than to channel coverage, but
+neither settles the question. Balanced accuracy and macro-F1 show a slightly larger gap to
+Hydra than accuracy, which suggests somewhat larger losses on minority classes; against
+Hydra, both are inconclusive.
+
+\paragraph{Limitations.}
+\begin{itemize}
+\item \emph{Equivalence, not superiority}, under a margin of $\pm0.5$ points on dataset
+  means; smaller differences are not resolved.
+\item \emph{One machine.} All times come from one CPU (Apple M4) with one thread. The ratios
+  may differ on other processors, with several threads, or on accelerators. Cache-miss
+  rates could not be measured and were dropped, as the pre-registration allowed.
+\item \emph{What the timings include.} Hydra's timed region includes aeon's conversion to
+  and from PyTorch tensors, as aeon runs it; we did not measure that conversion's share of
+  the $11.2\times$. The controls were timed with dense ternary dot products, so the
+  $3.8\times$ attributed to the tree is an upper bound on its gain over the best ternary
+  implementation. The timed kernels use floating point; the multiplication-free form of
+  Section~\ref{sec:operations} was not timed.
+\item \emph{Datasets.} Only equal-length series were used, so 4 UEA datasets are excluded,
+  and the UCR and UEA datasets are small \citep{dempster2025monster}. The published
+  comparators use different resample splits from ours and are paired by dataset only.
+\item \emph{The protocol} was pre-registered as a tagged document in our own repository,
+  not in a public registry.
+\item \emph{The theory.} The extremal properties of Hanner polytopes motivated the choice
+  of the family, but the method does not use them, and the most general one rests on an
+  unrefereed manuscript (Section~\ref{sec:hanner}).
+\end{itemize}
+
+\paragraph{Future work.} The natural next step is an integer implementation on a
+microcontroller, compared with NanoHydra \citep{cioflan2025nanohydra} on the same hardware;
+the multiplication-free form of the group evaluation makes this direct. A sparse ternary
+control kernel would measure the tree's gain over the best ternary implementation, of
+which the $3.8\times$ is an upper bound. Hydra is most
+accurate in combination with MultiRocket features \citep{middlehurst2024bakeoff}, and
+\hh{} features can enter the same combinations, or those with QUANT and tabular models
+\citep{maniar2025metalearning,orourke2026rocketpfn}. Large datasets
+\citep{dempster2025monster}, where the speed and memory savings matter most, series of
+unequal length, and data-dependent rather than random trees are further directions.

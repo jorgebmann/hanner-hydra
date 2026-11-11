@@ -1,0 +1,29 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    name: test (${{ matrix.name }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # core install: numba, so the equivalence tests run; no aeon, so the
+          # package must import without it
+          - name: core
+            extras: --extra fast
+          # aeon estimators: aeon's estimator checks and identity with the reference
+          - name: aeon
+            extras: --extra fast --extra aeon
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+      - run: uv sync ${{ matrix.extras }}
+      - run: uv run ruff check .
+      - run: uv run ruff format --check .
+      - run: uv run pytest

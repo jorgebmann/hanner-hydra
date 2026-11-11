@@ -1,0 +1,83 @@
+\section{Pre-registered protocol}
+\label{sec:protocol}
+
+We fixed the hypothesis, the configuration, the datasets, the analysis and the decision rule
+before the main runs, and froze them on 4 November 2026 as a tagged commit of our
+development repository. The pre-registration is a document in our own repository, not an
+entry in a public registry, and the development history is not public, so its date is
+not independently verifiable; the public copy records the SHA-256 of the frozen document. Pre-registration is still rare in machine
+learning \citep{prereg2020neurips}. We use it because a non-inferiority claim depends on
+choices (margin, metric, datasets, timing procedure) that are easy to adjust after seeing
+the results. Section~\ref{sec:reproducibility} gives the document and the code. This section
+summarises the protocol; the document itself takes precedence.
+
+\paragraph{Hypothesis.} H1 states that \hh{} is not worse than Hydra and not worse than the
+symmetric control in accuracy, and that its single-core transform is at least four times
+faster than Hydra's. H0 is retained if any of the three conditions fails.
+
+\paragraph{Arms.} \hh{}, \texttt{control\_sym} and \texttt{control} use the frozen
+configuration of Section~\ref{sec:method} ($\ell=9$, $V_{\max}=32$,
+$p_{\text{product}}=0.5$, 256 atoms per block, mixed centring, at most 8 channels per
+group, soft-max and hard-max counts). Hydra is aeon's \texttt{HydraClassifier} with 8
+kernels in 64 groups and its other defaults \citep{dempster2023hydra,middlehurst2024aeon}.
+Before the freeze, this baseline reproduced aeon's published Hydra accuracies on the
+default UCR splits (mean difference $+0.42$ points, within the pre-registered gate
+of $\pm0.5$ points). Every arm is seeded with the resample
+id.
+
+\paragraph{Datasets and resamples.} We use the 112 UCR datasets of the Hydra evaluation and
+the 26 equal-length UEA datasets \citep{dau2019ucr,bagnall2018uea}, 138 in all; the four
+UEA datasets with series of unequal length are excluded, not padded. Each dataset has 30
+resamples: resample 0 is the default train/test split, and resample $i>0$ pools the two and
+redraws a stratified split with the original class counts, as in the bake-offs
+\citep{ruiz2021multivariate,middlehurst2024bakeoff}. All arms see identical splits. A
+dataset enters the analysis only if every arm completes all 30 resamples, and settings are
+never changed for individual datasets.
+
+\paragraph{Datasets that informed the design.} Development, diagnosis and pilot runs before
+the freeze used 45 of the 138 datasets (28 UCR, 17 UEA). The pre-registration lists them,
+and we report the other 93 (84 UCR, 9 UEA) separately as \emph{fresh} datasets.
+
+\paragraph{Accuracy analysis.} The score of an arm on a dataset is its mean test accuracy
+over the 30 resamples, in percentage points, and $\Delta$ is \hh{} minus the comparator. A
+single Bayesian signed-rank test \citep{benavoli2017bayesian} over the 138 datasets, with a
+region of practical equivalence (ROPE) of $\pm0.5$ points, gives the posterior
+probabilities that \hh{} is practically worse, equivalent or better. \hh{} is \emph{not
+worse} than a comparator if $P(\text{rope})+P(\text{better})\ge0.95$.
+
+\paragraph{Timing analysis.} Times are measured on one machine (Apple M4, 32\,GB, on mains
+power, Low Power Mode off, no other workload), with one thread per process. The timed
+region is \texttt{transform} of the test set of the default split after \texttt{fit} on
+the training set. For Hydra it includes aeon's conversion to and from PyTorch tensors; for
+\hh{} it uses the Numba kernels. Neither the scaler nor the classifier is timed. Per
+dataset, each arm gets one untimed warm-up and then seven timed calls, interleaved across
+arms in a rotating order, and its time is the median of the seven. Three passes run in
+separate processes, each with its own seeded dataset order, and the time of an arm on a
+dataset is the median of its three pass medians. The endpoint is the median over the 138
+datasets of the per-dataset ratio of Hydra's time to \hh{}'s.
+
+\paragraph{Decision rule.} H1 is accepted if and only if \hh{} is not worse than Hydra, not
+worse than \texttt{control\_sym}, and the median time ratio is at least 4.
+
+\paragraph{Secondary analyses.} The pre-registration also names analyses that are reported
+but do not decide: the subsets (UCR, UEA, fresh); the comparison with \texttt{control};
+two-sided Wilcoxon signed-rank tests with Holm's correction and critical-difference
+diagrams \citep{demsar2006statistical}; balanced accuracy and macro-F1; aeon's published
+results for WEASEL~2.0, MiniRocket, MultiRocket and HIVE-COTE~2.0 on the UCR datasets;
+peak transform memory; fit times; and exploratory ablations. Cache-miss rates were planned
+as well, with the fallback of dropping them if the processor's counters could not be read
+reliably; they could not, so they are not reported.
+
+\paragraph{Deviation.} One change was made after the freeze. The frozen analysis code took
+the order of the resamples from a set, whose iteration order depends on the process, so the
+dataset means could differ in the last bit between runs and change the win/tie/loss counts,
+which count exact ties, by one or two datasets. The fix sorts the resamples. It changes no
+mean, no probability at the reported precision, and no decision.
+
+\paragraph{Execution.} All arms completed all 30 resamples on all 138 datasets, so no
+dataset was excluded (16,560 prediction files). The accuracy runs were interrupted twice
+when the machine ran out of memory and stopped once by a memory watchdog; each time they
+were resumed with identical seeds and code, and the interrupted resamples were rerun. All three
+timing passes completed on every dataset. The first run of one pass took place while the
+machine was in use, which breaks the idle condition, so it was repeated as the protocol
+requires; the endpoint is the same with either run ($11.23\times$).

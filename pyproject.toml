@@ -1,0 +1,68 @@
+[build-system]
+requires = ["hatchling>=1.25"]
+build-backend = "hatchling.build"
+
+[project]
+name = "hanner-hydra"
+dynamic = ["version"]
+description = "Hanner-polytope ternary kernel dictionaries for Hydra-style time series classification"
+readme = "README.md"
+authors = [{ name = "Jörg Bahlmann", email = "jbahlmann.dev@gmail.com" }]
+license = "BSD-3-Clause"
+license-files = ["LICENSE"]
+requires-python = ">=3.11"
+classifiers = [
+    "Development Status :: 2 - Pre-Alpha",
+    "Programming Language :: Python :: 3",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+dependencies = [
+    "numpy>=1.26",
+    "scikit-learn>=1.4",
+]
+
+[project.optional-dependencies]
+# aeon-compatible estimators (hanner_hydra.estimators); tested with aeon 1.6.0.
+# <2: the wrappers implement aeon's private hooks (_fit, _transform, _predict, _tags).
+aeon = [
+    "aeon>=1.6,<2",
+]
+# Baselines (Hydra, MiniROCKET, MultiROCKET, WEASEL 2.0, HC2) and UCR/UEA loaders.
+bench = [
+    "hanner-hydra[aeon]",
+    "torch>=2.3",  # aeon's HydraTransformer depends on torch
+    "pandas>=2.0",
+    "matplotlib>=3.11.2",
+]
+# JIT kernels for the fast transform (milestone M1).
+fast = [
+    "numba>=0.60",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.0",
+    "ruff>=0.6",
+]
+
+[tool.hatch.version]
+path = "src/hanner_hydra/__init__.py"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/hanner_hydra"]
+
+[tool.ruff]
+target-version = "py311"
+line-length = 100
+src = ["src", "tests", "experiments"]
+
+[tool.ruff.lint]
+select = ["E", "W", "F", "I", "UP", "B", "SIM", "RUF"]
+
+[tool.ruff.lint.per-file-ignores]
+# Experiment scripts pin thread env vars before importing numpy / torch.
+"experiments/*.py" = ["E402"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"

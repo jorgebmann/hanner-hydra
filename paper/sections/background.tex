@@ -1,0 +1,78 @@
+\section{Background}
+\label{sec:background}
+
+\subsection{Hydra}
+\label{sec:hydra}
+
+Hydra \citep{dempster2023hydra} transforms a time series with random convolutional kernels
+organised into competing groups. In the configuration we compare against, each group has
+$k=8$ kernels of length 9 with Gaussian weights, and there are $g=64$ groups per dilation,
+half applied to the series and half to its first difference. The dilations grow
+exponentially, and the convolutions are padded so that the output has the length of the
+input. In a multivariate series, each group works on the sum of a random subset of
+channels.
+
+At every time step, each group compares the responses of its $k$ kernels. Hydra records two
+counts per kernel: a \emph{soft} count, which adds the response of the kernel with the
+largest response, and a \emph{hard} count of how often the kernel has the smallest response
+(the \emph{hard-min} count). The features of all groups go through a sparse scaler and a
+ridge classifier. The size of the groups moves Hydra between ROCKET-like features
+\citep{dempster2020rocket} and dictionary-like counts of patterns
+\citep{dempster2023hydra}.
+
+Geometrically, the kernels $w_1,\dots,w_k\in\R^\ell$ of a group are points, and the winner
+for a patch $x$ is the point that maximises $\langle x,w_j\rangle$. It is the vertex of the
+polytope $P=\operatorname{conv}\{w_1,\dots,w_k\}$ whose normal cone contains $x$: the group
+divides $\R^\ell$ into cones and reports which cone each patch falls into, and the largest
+response is the support function $h_P(x)=\max_j\langle x,w_j\rangle$. Finding the winner by
+evaluating every kernel costs $k\ell$ multiplications per time step and group. \hh{} keeps
+this pipeline and replaces $P$ by a polytope whose winner can be found without evaluating
+its vertices one by one.
+
+\subsection{Hanner polytopes}
+\label{sec:hanner}
+
+Hanner polytopes are the convex bodies built from the segment $[-1,1]$ by two operations,
+the $\ell_\infty$ product $K_1\linf K_2=K_1\times K_2$ and the $\ell_1$ sum
+$K_1\lone K_2=\operatorname{conv}((K_1\times\{0\})\cup(\{0\}\times K_2))$, together with
+their linear images. They originate in Hanner's study of normed spaces in which every three
+pairwise intersecting balls have a common point \citep{hanner1956intersections}; Hansen and
+Lima showed that, in finite dimensions, these are exactly the spaces whose unit balls are
+built in this way \citep{hansen1981structure}. The cube (products only) and the
+cross-polytope (sums only) are the two extremes. Every Hanner polytope is described by a
+rooted tree whose leaves are segments and whose internal nodes are products or sums. Trees
+of this kind describe cographs, where they are called cotrees
+\citep{corneil1981cographs}; we use the term for our labelled trees on the taps of a kernel
+(Section~\ref{sec:groups}).
+
+Hanner polytopes are extremal for several problems about centrally symmetric convex bodies.
+Every Hanner polytope of dimension $d$ has exactly $3^d$ non-empty faces, the smallest
+number that Kalai's $3^d$ conjecture allows for a centrally symmetric $d$-polytope; the
+conjecture is proven for $d\le4$ \citep{sanyal2009kalai}, and among the Hansen polytopes
+of graphs, the Hanner polytopes are exactly those of threshold graphs
+\citep{freij2013hansen}.
+
+The best-known extremal property concerns the volume product. For an origin-symmetric
+convex body $K\subset\R^n$ with polar body $K^\circ$, Mahler conjectured that
+$|K|\,|K^\circ|\ge 4^n/n!$ \citep{mahler1939uebertragung}. The cube and the cross-polytope
+attain this value, and so does every Hanner polytope. The inequality was proven for
+unconditional bodies \citep{saintraymond1981}, with the Hanner polytopes as the equality
+cases in that class \citep{meyer1986caracterisation}, for zonoids
+\citep{reisner1986zonoids}, and in dimension three
+\citep{iriyeh2020mahler,fradelizi2022mahler}. The cube is a strict local minimiser of the
+volume product \citep{nazarov2010mahler}, and so is every Hanner polytope
+\citep{kim2014hanner}. In 2026, OpenAI released a manuscript that claims the full symmetric
+conjecture, with equality exactly for the linear images of Hanner polytopes
+\citep[Theorem~1.1]{openai2026mahler}. The manuscript is not peer reviewed; its repository
+lists Lean formalisations of both the inequality and the equality characterisation, with
+their review status recorded as unchecked.
+
+Our method uses none of this extremality, and none of it implies that Hanner polytopes make
+good kernel groups. The volume product is invariant under linear maps, so its minimisers
+single out no coordinates, and it says nothing about how evenly the normal cones of a
+polytope divide $\R^\ell$, which is what matters for a group of competing kernels. \hh{}
+relies only on three properties that every Hanner polytope has in its canonical coordinates,
+whatever the status of the Mahler conjecture: its vertices are ternary, it is centrally
+symmetric, and its support function and winning vertex follow its tree
+(Section~\ref{sec:method}). The extremal results are why we looked at this family; the
+experiments, not the theory, decide whether it makes good kernel groups.

@@ -1,0 +1,291 @@
+\section{Method}
+\label{sec:method}
+
+\hh{} keeps Hydra's pipeline (dilated convolutions on the series and its first difference,
+competing groups, counts of winners, sparse scaling and a ridge classifier) and changes
+only the groups. Each group is the vertex set of a Hanner polytope, given by a labelled
+cotree on the kernel's taps. This section defines the groups
+(Section~\ref{sec:groups}), shows that the winner of a group follows the cotree
+(Section~\ref{sec:recursion}), interprets the resulting features
+(Section~\ref{sec:interpretation}), and describes the sampler, the transform, the
+operation count, the controls and the implementation
+(Sections~\ref{sec:sampling}--\ref{sec:implementation}).
+
+\subsection{Hanner groups}
+\label{sec:groups}
+
+A kernel has $\ell$ taps, and a patch is a vector $x\in\R^\ell$ of $\ell$ dilated samples of
+the input. A \emph{labelled cotree} $T$ on the taps is a full binary tree whose leaves are
+the taps $1,\dots,\ell$, each exactly once, and whose internal nodes are labelled $\lone$
+(an $\ell_1$ sum) or $\linf$ (an $\ell_\infty$ product). Every subtree $S$ covers a set
+$\tau(S)$ of taps, and the two children of a node cover disjoint sets.
+
+\begin{definition}[Hanner group]
+\label{def:group}
+The \emph{group} of a subtree $S$ is the ordered list $V(S)$ of vectors in $\R^\ell$
+defined by
+\begin{itemize}
+\item a leaf on tap $i$: $V(S)=(-e_i,\,e_i)$;
+\item $S=S_1\lone S_2$: the list $V(S_1)$ followed by $V(S_2)$;
+\item $S=S_1\linf S_2$: the vectors $v_a+u_b$ for $v_a\in V(S_1)$, $u_b\in V(S_2)$,
+  ordered by the index $a\,n_2+b$, where $n_2=|V(S_2)|$ and indices start at 0.
+\end{itemize}
+The group of the cotree is $V=V(T)$, and its size is $|V|$.
+\end{definition}
+
+The convex hull of $V$ is the Hanner polytope of $T$: a leaf gives the segment
+$[-e_i,e_i]$, a $\linf$ node gives the Cartesian product $K_1\times K_2$ of the
+children's polytopes (they live in complementary coordinate subspaces), and a $\lone$ node
+gives $\operatorname{conv}(K_1\cup K_2)$. These are the two operations that define Hanner
+polytopes \citep{hanner1956intersections,hansen1981structure}.
+
+\begin{proposition}[Structure of a group]
+\label{prop:structure}
+For every labelled cotree $T$ on $\ell$ taps:
+\begin{enumerate}
+\item the vectors in $V$ are distinct, and they are exactly the vertices of
+  $\operatorname{conv}V$;
+\item every vector has entries in $\{-1,0,1\}$, and its support is a union of whole
+  leaves;
+\item $V=-V$: the map $\alpha$ defined by swapping the two vertices of each leaf, acting
+  on each part of a $\lone$ node and on both factors of a $\linf$ node, is an involution
+  with $V_{\alpha(j)}=-V_j$;
+\item $2\ell\le|V|\le 2^\ell$; the cross-polytope (all nodes $\lone$) attains the lower
+  bound and the cube (all nodes $\linf$) the upper one.
+\end{enumerate}
+\end{proposition}
+
+\begin{proof}
+All four statements follow by induction over the tree. (1)~The vertices of a product of
+polytopes are the pairs of vertices. For two polytopes in complementary subspaces that each
+contain the origin in their relative interior, the vertices of the convex hull of their union
+are the vertices of the two polytopes. Distinctness follows because the parts of a $\lone$
+node have disjoint supports and the parts of a $\linf$ node are recovered by restricting to
+$\tau(S_1)$ and $\tau(S_2)$. (2)~Each tap belongs to one leaf, and a $\linf$ node adds vectors
+with disjoint supports. (3)~Negation commutes with both operations. (4)~A subtree on $t$
+taps has between $2t$ and $2^t$ vertices: a leaf has 2; a $\lone$ node has $n_1+n_2$ and a
+$\linf$ node $n_1n_2$ vertices, and $n_1+n_2\le n_1n_2$ whenever $n_1,n_2\ge2$. The bounds
+are not characterisations: a product of two leaves has $4=2+2$ vertices, so, for example,
+$(x_1\linf x_2)\lone x_3$ also has $2\ell=6$ vertices.
+\end{proof}
+
+\subsection{Support-function recursion}
+\label{sec:recursion}
+
+Hydra's group responds to a patch $x$ with the winning kernel
+$\operatorname{arg\,max}_j\langle x,w_j\rangle$ and its response. For a Hanner group, the
+response of the winner is the support function $h(x)=\max_{v\in V}\langle x,v\rangle$ of
+the polytope, and it follows the cotree.
+
+\begin{proposition}[Winner recursion]
+\label{prop:recursion}
+Compute, bottom-up over the cotree, a value $h(S)$ and an index $w(S)$ for every subtree:
+\begin{itemize}
+\item leaf on tap $i$: $h=|x_i|$; $w=1$ (the vertex $e_i$) if $x_i>0$, and $w=0$ (the
+  vertex $-e_i$) otherwise;
+\item $S=S_1\linf S_2$: $h=h(S_1)+h(S_2)$ and $w=w(S_1)\,n_2+w(S_2)$;
+\item $S=S_1\lone S_2$: if $h(S_1)\ge h(S_2)$, then $h=h(S_1)$ and $w=w(S_1)$; otherwise
+  $h=h(S_2)$ and $w=n_1+w(S_2)$, with $n_1=|V(S_1)|$.
+\end{itemize}
+At the root, $h(T)=\max_{v\in V}\langle x,v\rangle$, and $w(T)$ is the lowest index in $V$
+at which this maximum is attained. The recursion uses $\ell$ absolute values and $\ell-1$
+additions or comparisons of real numbers, and no multiplications; each leaf's sign test
+$x_i>0$ yields both $|x_i|$ (by a select) and the leaf's winner.
+\end{proposition}
+
+\begin{proof}
+By induction, with the claim that $h(S)=\max_{v\in V(S)}\langle x,v\rangle$ and that $w(S)$
+is the lowest maximising index in $V(S)$.
+\emph{Leaf.} The responses are $-x_i$ (index 0) and $x_i$ (index 1). If $x_i>0$, only
+index~1 attains $|x_i|$; if $x_i<0$, only index~0; if $x_i=0$, both do and the lowest is~0.
+\emph{Product.} Since $v_a$ and $u_b$ have disjoint supports,
+$\langle x,v_a+u_b\rangle=\langle x,v_a\rangle+\langle x,u_b\rangle$, so the maximum is
+$h(S_1)+h(S_2)$ and the set of maximisers is the product of the children's maximiser sets.
+Because $0\le b<n_2$, the index $a\,n_2+b$ is lexicographic in $(a,b)$, so its minimum
+over a product set is attained at the two smallest indices.
+\emph{Sum.} $V(S)$ is the union of the two lists, with the first list at indices below
+$n_1$, so the maximum is $\max(h(S_1),h(S_2))$. If $h(S_1)\ge h(S_2)$, the first list
+contains a maximiser, and every index in it is lower than every index in the second.
+Otherwise every maximiser is in the second list, at offset $n_1$.
+\emph{Count.} A binary tree with $\ell$ leaves has $\ell-1$ internal nodes, each costing one
+addition or one comparison. The index updates are integer arithmetic on the winners and do
+not involve the data.
+\end{proof}
+
+The index $w(T)$ is the first maximiser in list order, which is what a brute-force argmax
+over $V$ returns, so the recursion and a brute-force evaluation give the same winner and
+the same counts, including ties. This
+statement is about exact arithmetic. In floating point, the recursion adds the responses in
+the order of the tree, while a dot product adds them in tap order. Our reference
+implementation and the fast kernels both use the recursion's order and agree bit for bit
+(Section~\ref{sec:implementation}).
+
+\begin{proposition}[Minimum and hard-min counts]
+\label{prop:hardmin}
+For a Hanner group, $\min_{v\in V}\langle x,v\rangle=-h(x)$, attained at $\alpha(w)$. If the
+minimiser is taken to be $\alpha(w)$, the hard-min count of every vertex $v$ equals the
+hard-max count of $-v$, so the hard-min features are a fixed permutation of the hard-max
+features. The same holds for every centrally symmetric group.
+\end{proposition}
+
+This follows from $V=-V$ (Proposition~\ref{prop:structure}). The tie rule matters: Hydra
+takes the \emph{first} minimiser in list order, which differs from $\alpha(w)$ whenever the
+minimum is attained more than once. Ties are not rare: a patch with a zero tap, as at the
+zero-padded ends of a series, ties at that leaf. With Hydra's rule the hard-min counts are
+therefore a permutation of the hard-max counts only up to tied patches. Our implementation
+uses $\alpha(w)$. A per-feature scaler and a linear classifier are invariant to a fixed
+permutation of the features, so these hard-min counts carry no information beyond the
+hard-max counts, and \hh{} counts soft maxima and hard maxima (Section~\ref{sec:transform}).
+The ablation with hard-min counts (Section~\ref{sec:results}) uses the same $\alpha(w)$
+rule; its identical predictions confirm the permutation argument in the implementation,
+but they are not an independent test of Hydra's first-minimiser rule.
+
+\subsection{What the features compute}
+\label{sec:interpretation}
+
+The two extreme cotrees give two familiar codes. For the cube ($|V|=2^\ell$, all
+$\linf$), the winner is the sign pattern of the patch,
+$(\operatorname{sign}x_1,\dots,\operatorname{sign}x_\ell)$ with $0$ mapped to $-1$, and $h$
+is $\|x\|_1$. This is the code of hyperplane hashing \citep{charikar2002simhash}, here with
+the coordinate axes as hyperplanes. For the cross-polytope ($|V|=2\ell$, all $\lone$), the
+winner is the coordinate of largest magnitude with its sign, and $h=\|x\|_\infty$. This is
+the code of cross-polytope hashing \citep{andoni2015crosspolytope}, without its random
+rotation. In a mixed cotree, a $\linf$ node concatenates the winners of its children and a
+$\lone$ node keeps the winner of the child with the larger response. The winner is
+therefore a sign pattern on a subset of the taps, and the $\lone$ nodes choose the subset
+by where the patch responds most strongly. In \hh{} the randomness that hashing gets from
+random projections comes from the sampled cotree, the dilation and the channel subset.
+
+The features are therefore close to counts of binary symbolic words, as in dictionary
+methods \citep{lin2007sax,schaefer2023weasel2}, and to sign patterns of neighbouring
+samples \citep{kaya2014lbp}. They differ from ordinal patterns \citep{bandt2002permutation},
+which record the rank order of the samples rather than their signs. The soft-max count
+weights each word by the response $h$, which, for a cube on centred taps, is the patch's
+$\ell_1$ deviation from its mean.
+
+\subsection{Cotree sampling}
+\label{sec:sampling}
+
+Groups are drawn at random under a vertex budget $V_{\max}$. The sampler starts from the
+$\ell$ leaves in random order and merges two randomly chosen subtrees until one tree
+remains. A merge of subtrees with $n_a$ and $n_b$ vertices is a $\linf$ product with
+probability $p_{\text{product}}$ if
+\[
+  R + n_a n_b \le V_{\max},
+\]
+where $R$ is the total vertex count of the other subtrees; otherwise it is a $\lone$ sum.
+Merging all remaining subtrees by sums would give $R+n_an_b$ vertices, the smallest
+possible final count, so the condition keeps the final group within $V_{\max}$ and no draw
+is ever rejected. Every tap appears in every group, so $2\ell\le|V|\le V_{\max}$. With the
+frozen setting ($\ell=9$, $V_{\max}=32$, $p_{\text{product}}=0.5$), groups have 18 to 32
+vertices, 24.4 on average (Table~\ref{tab:operations}). The sampler can also restrict
+merges to adjacent blocks of taps; this option is off in all reported runs.
+
+\subsection{The transform}
+\label{sec:transform}
+
+The transform follows Hydra \citep{dempster2023hydra} in everything but the groups.
+\begin{itemize}
+\item \emph{Dilations and inputs.} The dilations are $2^0,2^1,\dots,
+  2^{\lfloor\log_2((T-1)/(\ell-1))\rfloor}$ for series of length $T$, with zero padding
+  that keeps the output length. Each dilation is applied to the series and to its first
+  difference.
+\item \emph{Groups per block.} For each pair of dilation and input (a block), groups are
+  drawn until their vertices, the \emph{atoms}, reach a budget of 256, the number of
+  kernels Hydra uses per block ($k=8$ kernels in 32 groups). A block has 10.9 groups on
+  average.
+\item \emph{Channels.} For a series with $C>1$ channels, each group draws
+  $\operatorname{clip}(\lfloor C/2\rfloor,2,8)$ channels at random (with replacement), the
+  subset size used by Hydra, and works on their sum.
+\item \emph{Centring.} In each block, every second group sees mean-centred patches
+  $x-\bar{x}\mathbf{1}$, and the others see raw patches. The centred groups respond to the
+  shape of a patch regardless of its level; the raw groups also see the level relative to
+  zero (ablation in Section~\ref{sec:results}).
+\item \emph{Features.} For every vertex $v$ of every group, the transform records the
+  number of time steps at which $v$ wins (hard-max count) and the sum of the winning
+  responses $h$ at those steps (soft-max count). A block contributes two features per
+  atom.
+\item \emph{Classifier.} The features go through Hydra's sparse scaler, which takes square
+  roots, standardises each feature and sets the entries that were zero back to zero. A
+  ridge classifier follows, with its regularisation strength chosen by leave-one-out
+  cross-validation among 10 values from $10^{-3}$ to $10^{3}$.
+\end{itemize}
+
+\subsection{Operation count}
+\label{sec:operations}
+
+\begin{table}[t]
+\centering\small
+\input{tables/operations}
+\caption{Arithmetic per time step of one block (one dilation and input, 256 atoms), under
+the frozen sampler. Operations are additions, subtractions, comparisons and, for Hydra,
+multiplications; \hh{} also takes $\ell=9$ absolute values per group, included in its
+count. The matched control has the same vertex sparsity as \hh{}. As timed, it evaluates
+every vertex as a dense dot product over all $\ell$ taps, multiplying by $-1$, $0$ or $1$;
+the sparse row counts an evaluation over the non-zeros only, which we did not implement.
+Hydra finds both the maximum and the minimum of each group. Patch extraction, channel
+sums, centring and counting are shared by all arms and not counted.}
+\label{tab:operations}
+\end{table}
+
+Table~\ref{tab:operations} counts the arithmetic that finding the winners needs: the
+intrinsic cost of a group, not a model of the measured times. A Hydra group of 8 Gaussian
+kernels of length 9 costs 72 multiplications, 64 additions and 14 comparisons for 8 atoms.
+A Hanner group costs 17 operations for 24 atoms on average, with no multiplication. A
+ternary group with the same vertices costs 439 operations when every vertex is evaluated
+densely, as in our control kernel, and 54 when only the non-zeros are visited. Per block,
+Hydra and the dense control both need about $26\times$ the operations of \hh{}, and a
+sparse control would need $3.2\times$.
+
+The measured transform-time ratios do not follow these counts: Hydra / \hh{} is
+$11.2\times$, \texttt{control\_sym} / \hh{} is $3.8\times$, and Hydra / \texttt{control\_sym}
+is $3.0\times$, although Hydra and the dense control have nearly the same count
+(Section~\ref{sec:results}). The shared costs in the caption (patch extraction, channel
+sums and counting, which touch memory) take a large share of the time, and Hydra runs its
+convolutions in PyTorch, in aeon's implementation. Two consequences for the comparison with
+the controls: the $3.8\times$ compares the recursion with a dense ternary evaluation of the
+same groups, so it is an upper bound on what the cotree adds over the best ternary
+implementation; and the counts alone do not say how much of it a sparse control kernel would
+recover. We did not time one.
+
+\emph{What ``multiplication-free'' covers.} It covers the group evaluation: the winner and
+its response need only absolute values, additions and comparisons. The first difference is
+a subtraction, and soft-max counts add the winning responses. Centring is the one place
+where our implementation divides: it subtracts the patch mean $\bar{x}=s/\ell$, with
+$s=\sum_i x_i$, once per patch, not once per group or vertex. A multiplication-free form
+exists: evaluate the group on $\ell x_i-s$ instead, where $9x_i=8x_i+x_i$ is a shift and an
+addition for $\ell=9$. Since $\langle\ell x-s\mathbf{1},v\rangle=\ell\,\langle
+x-\bar{x}\mathbf{1},v\rangle$, the winners and hard-max counts are unchanged in exact
+arithmetic, and the soft-max counts of the centred groups are scaled by $\ell$, which the
+per-feature scaler removes. The sparse scaler and the ridge classifier do multiply, as in
+Hydra and MiniRocket. The kernels we timed use floating point and the division; all
+timings are for that implementation, not for the scaled form.
+
+\subsection{Theory-matched controls}
+\label{sec:controls}
+
+Two controls separate the cotree structure from the other properties of a Hanner group.
+For every Hanner group, a control draws a random group of ternary vectors with the same
+size and the same number of non-zeros per vertex: the positions and signs of the non-zeros
+are uniform, and duplicate vectors are redrawn. \texttt{control} draws the vectors
+independently. \texttt{control\_sym} draws them in antipodal pairs $(u,-u)$ placed at the
+pair positions of the Hanner group, so it is centrally symmetric and has the same antipode
+map $\alpha$. Both controls are evaluated by ternary dot products, $|V|$ per patch, each over all $\ell$
+taps (Section~\ref{sec:operations}), and
+pass through the same transform, scaler and classifier. A difference between \hh{} and
+\texttt{control\_sym} can therefore come only from the cotree structure, and a difference
+between the two controls only from central symmetry. The pre-registration names
+\texttt{control\_sym} as the primary control (Section~\ref{sec:protocol}).
+
+\subsection{Implementation}
+\label{sec:implementation}
+
+The reference implementation is written in NumPy. It fixes the order of every
+floating-point sum, so that a second implementation can reproduce it exactly. The timed
+implementation consists of single-threaded Numba kernels, one for Hanner groups (the
+recursion of Proposition~\ref{prop:recursion}) and one for the ternary controls. The tests
+check that both kernels reproduce the reference bit for bit, and that the recursion agrees
+with brute force over the vertex list, including ties. The method is also available as
+aeon estimators \citep{middlehurst2024aeon}, a transformer and a classifier that wrap the
+reference and reproduce it exactly. Section~\ref{sec:reproducibility} lists the code and
+data.

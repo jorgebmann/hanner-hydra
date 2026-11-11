@@ -1,0 +1,519 @@
+% References for the Hanner-Hydra paper.
+% Verification status is in paper/literature-review.md (Sources). Fields that could not be
+% confirmed are left out or flagged in a "note" starting with "VERIFY"; resolve every
+% VERIFY before submission.
+
+% ---------------------------------------------------------------- random-kernel methods
+
+@article{dempster2020rocket,
+  author  = {Dempster, Angus and Petitjean, Fran{\c{c}}ois and Webb, Geoffrey I.},
+  title   = {{ROCKET}: exceptionally fast and accurate time series classification using
+             random convolutional kernels},
+  journal = {Data Mining and Knowledge Discovery},
+  volume  = {34},
+  number  = {5},
+  pages   = {1454--1495},
+  year    = {2020},
+  doi     = {10.1007/s10618-020-00701-z}
+}
+
+@inproceedings{dempster2021minirocket,
+  author    = {Dempster, Angus and Schmidt, Daniel F. and Webb, Geoffrey I.},
+  title     = {{MiniRocket}: A Very Fast (Almost) Deterministic Transform for Time Series
+               Classification},
+  booktitle = {Proceedings of the 27th ACM SIGKDD Conference on Knowledge Discovery \&
+               Data Mining (KDD '21)},
+  pages     = {248--257},
+  year      = {2021},
+  doi       = {10.1145/3447548.3467231},
+  eprint    = {2012.08791},
+  archivePrefix = {arXiv}
+}
+
+@article{tan2022multirocket,
+  author  = {Tan, Chang Wei and Dempster, Angus and Bergmeir, Christoph and Webb, Geoffrey I.},
+  title   = {{MultiRocket}: multiple pooling operators and transformations for fast and
+             effective time series classification},
+  journal = {Data Mining and Knowledge Discovery},
+  volume  = {36},
+  number  = {5},
+  pages   = {1623--1646},
+  year    = {2022},
+  doi     = {10.1007/s10618-022-00844-1}
+}
+
+@article{dempster2023hydra,
+  author  = {Dempster, Angus and Schmidt, Daniel F. and Webb, Geoffrey I.},
+  title   = {Hydra: competing convolutional kernels for fast and accurate time series
+             classification},
+  journal = {Data Mining and Knowledge Discovery},
+  volume  = {37},
+  number  = {5},
+  pages   = {1779--1805},
+  year    = {2023},
+  doi     = {10.1007/s10618-023-00939-3}
+}
+
+@article{dempster2024quant,
+  author  = {Dempster, Angus and Schmidt, Daniel F. and Webb, Geoffrey I.},
+  title   = {{QUANT}: a minimalist interval method for time series classification},
+  journal = {Data Mining and Knowledge Discovery},
+  volume  = {38},
+  number  = {4},
+  pages   = {2377--2402},
+  year    = {2024}
+}
+
+@misc{salehinejad2022srocket,
+  author = {Salehinejad, Hojjat and Wang, Yang and Yu, Yuanhao and Jin, Tang and
+            Valaee, Shahrokh},
+  title  = {{S-Rocket}: Selective Random Convolution Kernels for Time Series
+            Classification},
+  year   = {2022},
+  eprint = {2203.03445},
+  archivePrefix = {arXiv},
+  note   = {Preprint; no published version in Crossref (checked 2026-11-08)}
+}
+
+@article{uribarri2024detach,
+  author  = {Uribarri, Gonzalo and Barone, Federico and Ansuini, Alessio and
+             Frans{\'e}n, Erik},
+  title   = {{Detach-ROCKET}: sequential feature selection for time series classification
+             with random convolutional kernels},
+  journal = {Data Mining and Knowledge Discovery},
+  volume  = {38},
+  number  = {6},
+  pages   = {3922--3947},
+  year    = {2024},
+  doi     = {10.1007/s10618-024-01062-7},
+  eprint  = {2309.14518},
+  archivePrefix = {arXiv}
+}
+
+@inproceedings{cioflan2025nanohydra,
+  author    = {Cioflan, Cristian and Fonseca, Jos{\'e} and Wang, Xiaying and Benini, Luca},
+  title     = {{NanoHydra}: Energy-Efficient Time-Series Classification at the Edge},
+  booktitle = {2025 International Joint Conference on Neural Networks (IJCNN)},
+  pages     = {1--7},
+  year      = {2025},
+  doi       = {10.1109/IJCNN64981.2025.11229151},
+  eprint    = {2510.20038},
+  archivePrefix = {arXiv}
+}
+
+@misc{maniar2025metalearning,
+  author = {Maniar, Urav},
+  title  = {The Meta-Learning Gap: Combining {Hydra} and {Quant} for Large-Scale Time Series
+            Classification},
+  year   = {2025},
+  eprint = {2512.06666},
+  archivePrefix = {arXiv}
+}
+
+@misc{orourke2026rocketpfn,
+  author = {O'Rourke, Franco Martino and Trisovic, Ana and Bertsimas, Dimitris},
+  title  = {{RocketPFN}: Accurate Time Series Classification via In-Context Learning},
+  year   = {2026},
+  eprint = {2606.21786},
+  archivePrefix = {arXiv}
+}
+
+% ---------------------------------------------------------------- dictionary, symbolic, hashing
+
+@article{lin2007sax,
+  author  = {Lin, Jessica and Keogh, Eamonn and Wei, Li and Lonardi, Stefano},
+  title   = {Experiencing {SAX}: a novel symbolic representation of time series},
+  journal = {Data Mining and Knowledge Discovery},
+  volume  = {15},
+  number  = {2},
+  pages   = {107--144},
+  year    = {2007}
+}
+
+@article{schaefer2023weasel2,
+  author  = {Sch{\"a}fer, Patrick and Leser, Ulf},
+  title   = {{WEASEL} 2.0: a random dilated dictionary transform for fast, accurate and
+             memory constrained time series classification},
+  journal = {Machine Learning},
+  volume  = {112},
+  number  = {12},
+  pages   = {4763--4788},
+  year    = {2023},
+  doi     = {10.1007/s10994-023-06395-w}
+}
+
+@inproceedings{charikar2002simhash,
+  author    = {Charikar, Moses S.},
+  title     = {Similarity estimation techniques from rounding algorithms},
+  booktitle = {Proceedings of the 34th Annual ACM Symposium on Theory of Computing (STOC)},
+  pages     = {380--388},
+  year      = {2002}
+}
+
+@inproceedings{andoni2015crosspolytope,
+  author    = {Andoni, Alexandr and Indyk, Piotr and Laarhoven, Thijs and Razenshteyn,
+               Ilya and Schmidt, Ludwig},
+  title     = {Practical and Optimal {LSH} for Angular Distance},
+  booktitle = {Advances in Neural Information Processing Systems 28 (NIPS 2015)},
+  pages     = {1225--1233},
+  year      = {2015},
+  eprint    = {1509.02897},
+  archivePrefix = {arXiv}
+}
+
+@inproceedings{yagnik2011wta,
+  author    = {Yagnik, Jay and Strelow, Dennis and Ross, David A. and Lin, Ruei-sung},
+  title     = {The power of comparative reasoning},
+  booktitle = {2011 International Conference on Computer Vision (ICCV)},
+  pages     = {2431--2438},
+  year      = {2011},
+  doi       = {10.1109/ICCV.2011.6126527}
+}
+
+% ---------------------------------------------------------------- low-precision networks
+
+@misc{li2016ternary,
+  author = {Li, Fengfu and Liu, Bin and Wang, Xiaoxing and Zhang, Bo and Yan, Junchi},
+  title  = {Ternary Weight Networks},
+  year   = {2016},
+  eprint = {1605.04711},
+  archivePrefix = {arXiv}
+}
+
+@inproceedings{rastegari2016xnor,
+  author    = {Rastegari, Mohammad and Ordonez, Vicente and Redmon, Joseph and Farhadi, Ali},
+  title     = {{XNOR-Net}: {ImageNet} Classification Using Binary Convolutional Neural
+               Networks},
+  booktitle = {Computer Vision -- ECCV 2016},
+  series    = {Lecture Notes in Computer Science},
+  pages     = {525--542},
+  year      = {2016},
+  doi       = {10.1007/978-3-319-46493-0_32},
+  eprint    = {1603.05279},
+  archivePrefix = {arXiv}
+}
+
+@inproceedings{chen2020addernet,
+  author    = {Chen, Hanting and Wang, Yunhe and Xu, Chunjing and Shi, Boxin and Xu, Chao and
+               Tian, Qi and Xu, Chang},
+  title     = {{AdderNet}: Do We Really Need Multiplications in Deep Learning?},
+  booktitle = {2020 IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)},
+  pages     = {1465--1474},
+  year      = {2020},
+  doi       = {10.1109/CVPR42600.2020.00154},
+  eprint    = {1912.13200},
+  archivePrefix = {arXiv}
+}
+
+% ---------------------------------------------------------------- convex geometry
+
+@article{hanner1956intersections,
+  author  = {Hanner, Olof},
+  title   = {Intersections of translates of convex bodies},
+  journal = {Mathematica Scandinavica},
+  volume  = {4},
+  pages   = {65--87},
+  year    = {1956}
+}
+
+@article{hansen1981structure,
+  author  = {Hansen, Allan B. and Lima, {\AA}svald},
+  title   = {The structure of finite dimensional {Banach} spaces with the 3.2. intersection
+             property},
+  journal = {Acta Mathematica},
+  volume  = {146},
+  pages   = {1--23},
+  year    = {1981}
+}
+
+@article{mahler1939uebertragung,
+  author  = {Mahler, Kurt},
+  title   = {Ein {\"U}bertragungsprinzip f{\"u}r konvexe {K}{\"o}rper},
+  journal = {{\v{C}}asopis pro p{\v{e}}stov{\'a}n{\'i} matematiky a fysiky},
+  volume  = {68},
+  number  = {3--4},
+  pages   = {93--102},
+  year    = {1939},
+  doi     = {10.21136/CPMF.1939.109441}
+}
+
+@incollection{saintraymond1981,
+  author    = {Saint-Raymond, Jean},
+  title     = {Sur le volume des corps convexes sym{\'e}triques},
+  booktitle = {S{\'e}minaire d'Initiation {\`a} l'Analyse, 20{\`e}me ann{\'e}e: 1980/1981},
+  series    = {Publications Math{\'e}matiques de l'Universit{\'e} Pierre et Marie Curie},
+  volume    = {46},
+  publisher = {Universit{\'e} Pierre et Marie Curie},
+  address   = {Paris},
+  year      = {1981},
+  note      = {Expos{\'e} no.~11, 25~pp. (zbMATH)}
+}
+
+@article{meyer1986caracterisation,
+  author  = {Meyer, Mathieu},
+  title   = {Une caract{\'e}risation volumique de certains espaces norm{\'e}s de dimension
+             finie},
+  journal = {Israel Journal of Mathematics},
+  volume  = {55},
+  number  = {3},
+  pages   = {317--326},
+  year    = {1986},
+  doi     = {10.1007/BF02765029}
+}
+
+@article{reisner1986zonoids,
+  author  = {Reisner, Shlomo},
+  title   = {Zonoids with minimal volume-product},
+  journal = {Mathematische Zeitschrift},
+  volume  = {192},
+  number  = {3},
+  pages   = {339--346},
+  year    = {1986},
+  doi     = {10.1007/BF01164009}
+}
+
+@article{iriyeh2020mahler,
+  author  = {Iriyeh, Hiroshi and Shibata, Masataka},
+  title   = {Symmetric {Mahler}'s conjecture for the volume product in the 3-dimensional
+             case},
+  journal = {Duke Mathematical Journal},
+  volume  = {169},
+  number  = {6},
+  pages   = {1077--1134},
+  year    = {2020},
+  doi     = {10.1215/00127094-2019-0072}
+}
+
+@article{fradelizi2022mahler,
+  author  = {Fradelizi, Matthieu and Hubard, Alfredo and Meyer, Mathieu and
+             Rold{\'a}n-Pensado, Edgardo and Zvavitch, Artem},
+  title   = {Equipartitions and {Mahler} volumes of symmetric convex bodies},
+  journal = {American Journal of Mathematics},
+  volume  = {144},
+  number  = {5},
+  pages   = {1201--1219},
+  year    = {2022},
+  doi     = {10.1353/ajm.2022.0027}
+}
+
+@article{nazarov2010mahler,
+  author  = {Nazarov, Fedor and Petrov, Fedor and Ryabogin, Dmitry and Zvavitch, Artem},
+  title   = {A remark on the {Mahler} conjecture: local minimality of the unit cube},
+  journal = {Duke Mathematical Journal},
+  volume  = {154},
+  number  = {3},
+  pages   = {419--430},
+  year    = {2010},
+  doi     = {10.1215/00127094-2010-042}
+}
+
+@article{kim2014hanner,
+  author  = {Kim, Jaegil},
+  title   = {Minimal volume product near {Hanner} polytopes},
+  journal = {Journal of Functional Analysis},
+  volume  = {266},
+  number  = {4},
+  pages   = {2360--2402},
+  year    = {2014},
+  doi     = {10.1016/j.jfa.2013.08.008},
+  eprint  = {1212.2544},
+  archivePrefix = {arXiv}
+}
+
+@misc{openai2026mahler,
+  author       = {{OpenAI}},
+  title        = {The symmetric {Mahler} conjecture and its equality cases},
+  howpublished = {OpenAI Math Release preprint, \url{https://github.com/openai/math},
+                  commit 4eaee87},
+  year         = {2026},
+  note         = {Manuscript dated September 22, 2026; not peer reviewed. Theorem 1.1.
+                  The repository's Lean index lists the inequality and the equality
+                  characterisation (review status ``unchecked'')}
+}
+
+@article{sanyal2009kalai,
+  author  = {Sanyal, Raman and Werner, Axel and Ziegler, G{\"u}nter M.},
+  title   = {On {Kalai}'s conjectures concerning centrally symmetric polytopes},
+  journal = {Discrete \& Computational Geometry},
+  volume  = {41},
+  number  = {2},
+  pages   = {183--198},
+  year    = {2009},
+  doi     = {10.1007/s00454-008-9104-8}
+}
+
+@article{freij2013hansen,
+  author  = {Freij, Ragnar and Henze, Matthias and Schmitt, Moritz W. and Ziegler,
+             G{\"u}nter M.},
+  title   = {Face numbers of centrally symmetric polytopes produced from split graphs},
+  journal = {Electronic Journal of Combinatorics},
+  volume  = {20},
+  number  = {2},
+  pages   = {P32},
+  year    = {2013}
+}
+
+@article{corneil1981cographs,
+  author  = {Corneil, Derek G. and Lerchs, H. and Stewart Burlingham, L.},
+  title   = {Complement reducible graphs},
+  journal = {Discrete Applied Mathematics},
+  volume  = {3},
+  number  = {3},
+  pages   = {163--174},
+  year    = {1981}
+}
+
+% ---------------------------------------------------------------- benchmarks and evaluation
+
+@article{dau2019ucr,
+  author  = {Dau, Hoang Anh and Bagnall, Anthony and Kamgar, Kaveh and Yeh, Chin-Chia
+             Michael and Zhu, Yan and Gharghabi, Shaghayegh and Ratanamahatana, Chotirat
+             Ann and Keogh, Eamonn},
+  title   = {The {UCR} time series archive},
+  journal = {IEEE/CAA Journal of Automatica Sinica},
+  volume  = {6},
+  number  = {6},
+  pages   = {1293--1305},
+  year    = {2019}
+}
+
+@misc{bagnall2018uea,
+  author = {Bagnall, Anthony and Dau, Hoang Anh and Lines, Jason and Flynn, Michael and
+            Large, James and Bostrom, Aaron and Southam, Paul and Keogh, Eamonn},
+  title  = {The {UEA} multivariate time series classification archive, 2018},
+  year   = {2018},
+  eprint = {1811.00075},
+  archivePrefix = {arXiv}
+}
+
+@article{ruiz2021multivariate,
+  author  = {Ruiz, Alejandro Pasos and Flynn, Michael and Large, James and Middlehurst,
+             Matthew and Bagnall, Anthony},
+  title   = {The great multivariate time series classification bake off: a review and
+             experimental evaluation of recent algorithmic advances},
+  journal = {Data Mining and Knowledge Discovery},
+  volume  = {35},
+  number  = {2},
+  pages   = {401--449},
+  year    = {2021}
+}
+
+@article{middlehurst2024bakeoff,
+  author  = {Middlehurst, Matthew and Sch{\"a}fer, Patrick and Bagnall, Anthony},
+  title   = {Bake off redux: a review and experimental evaluation of recent time series
+             classification algorithms},
+  journal = {Data Mining and Knowledge Discovery},
+  volume  = {38},
+  number  = {4},
+  pages   = {1958--2031},
+  year    = {2024}
+}
+
+@article{middlehurst2021hc2,
+  author  = {Middlehurst, Matthew and Large, James and Flynn, Michael and Lines, Jason and
+             Bostrom, Aaron and Bagnall, Anthony},
+  title   = {{HIVE-COTE} 2.0: a new meta ensemble for time series classification},
+  journal = {Machine Learning},
+  volume  = {110},
+  number  = {11--12},
+  pages   = {3211--3243},
+  year    = {2021},
+  doi     = {10.1007/s10994-021-06057-9}
+}
+
+@misc{dempster2025monster,
+  author  = {Dempster, Angus and Mohammadi Foumani, Navid and Tan, Chang Wei and
+             Miller, Lynn and Mishra, Amish and Salehi, Mahsa and Pelletier, Charlotte and
+             Schmidt, Daniel F. and Webb, Geoffrey I.},
+  title   = {{MONSTER}: Monash Scalable Time Series Evaluation Repository},
+  year    = {2025},
+  eprint  = {2502.15122},
+  archivePrefix = {arXiv}
+}
+
+@article{middlehurst2024aeon,
+  author  = {Middlehurst, Matthew and Ismail-Fawaz, Ali and Guillaume, Antoine and
+             Holder, Christopher and Guijo-Rubio, David and Bulatova, Guzal and
+             Tsaprounis, Leonidas and Mentel, Lukasz and Walter, Martin and
+             Sch{\"a}fer, Patrick and Bagnall, Anthony},
+  title   = {aeon: a {Python} Toolkit for Learning from Time Series},
+  journal = {Journal of Machine Learning Research},
+  volume  = {25},
+  number  = {289},
+  pages   = {1--10},
+  year    = {2024},
+  url     = {https://jmlr.org/papers/v25/23-1444.html}
+}
+
+@article{benavoli2017bayesian,
+  author  = {Benavoli, Alessio and Corani, Giorgio and Dem{\v{s}}ar, Janez and Zaffalon,
+             Marco},
+  title   = {Time for a change: a tutorial for comparing multiple classifiers through
+             {Bayesian} analysis},
+  journal = {Journal of Machine Learning Research},
+  volume  = {18},
+  number  = {77},
+  pages   = {1--36},
+  year    = {2017}
+}
+
+@article{demsar2006statistical,
+  author  = {Dem{\v{s}}ar, Janez},
+  title   = {Statistical comparisons of classifiers over multiple data sets},
+  journal = {Journal of Machine Learning Research},
+  volume  = {7},
+  pages   = {1--30},
+  year    = {2006}
+}
+
+@misc{ismailfawaz2023mcm,
+  author = {Ismail-Fawaz, Ali and Dempster, Angus and Tan, Chang Wei and
+            Herrmann, Matthieu and Miller, Lynn and Schmidt, Daniel F. and
+            Berretti, Stefano and Weber, Jonathan and Devanne, Maxime and
+            Forestier, Germain and Webb, Geoffrey I.},
+  title  = {An Approach to Multiple Comparison Benchmark Evaluations that is Stable Under
+            Manipulation of the Comparate Set},
+  year   = {2023},
+  eprint = {2305.11921},
+  archivePrefix = {arXiv},
+  note   = {Preprint; no published version in Crossref (checked 2026-11-08)}
+}
+
+@misc{prereg2020neurips,
+  key          = {NeurIPS 2020 workshop},
+  title        = {The pre-registration experiment: an alternative publication model for
+                  machine learning research},
+  howpublished = {Workshop at NeurIPS 2020, \url{https://neurips.cc/virtual/2020/workshop/16158};
+                  follow-up workshop at NeurIPS 2021},
+  year         = {2020}
+}
+
+@article{kaya2014lbp,
+  author  = {Kaya, Yilmaz and Uyar, Murat and Tekin, Ramazan and Y{\i}ld{\i}r{\i}m, Sel{\c{c}}uk},
+  title   = {{1D}-local binary pattern based feature extraction for classification of
+             epileptic {EEG} signals},
+  journal = {Applied Mathematics and Computation},
+  volume  = {243},
+  pages   = {209--219},
+  year    = {2014},
+  doi     = {10.1016/j.amc.2014.05.128}
+}
+
+@article{bandt2002permutation,
+  author  = {Bandt, Christoph and Pompe, Bernd},
+  title   = {Permutation Entropy: A Natural Complexity Measure for Time Series},
+  journal = {Physical Review Letters},
+  volume  = {88},
+  number  = {17},
+  pages   = {174102},
+  year    = {2002},
+  doi     = {10.1103/PhysRevLett.88.174102}
+}
+
+@misc{balakin2025maxout,
+  author = {Balakin, Andrei and Cox, Shelby and Loho, Georg and Sturmfels, Bernd},
+  title  = {Maxout Polytopes},
+  year   = {2025},
+  eprint = {2509.21286},
+  archivePrefix = {arXiv}
+}

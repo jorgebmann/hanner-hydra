@@ -1,0 +1,62 @@
+\section{Introduction}
+\label{sec:introduction}
+
+Methods built on random convolutional kernels combine accuracy and speed better than most
+other approaches to time series classification
+\citep{dempster2020rocket,dempster2021minirocket,tan2022multirocket,middlehurst2024bakeoff}.
+Hydra \citep{dempster2023hydra} organises such kernels into groups that compete at every
+time step and counts how often each kernel wins, which links convolutional methods with
+dictionary methods that count patterns. Together with MultiRocket features, Hydra is among
+the most accurate methods on the UCR archive \citep{middlehurst2024bakeoff}.
+
+The competition has a cost. To find the winner of a group of $k$ kernels of length $\ell$,
+Hydra evaluates every kernel: $k\ell$ multiplications per group and time step. Work on edge
+devices makes each kernel cheaper. NanoHydra \citep{cioflan2025nanohydra} uses binary
+kernels and integer arithmetic on a microcontroller, but still evaluates every kernel of a
+group, and in its own evaluation it is 1.5 points less accurate than Hydra on the UCR
+archive (83.81\% against 85.31\%), although its numbers are the best of several runs per
+dataset. This paper asks a different question: can the winner of a group be found without
+evaluating its kernels one by one, without losing accuracy?
+
+We answer it with groups that have a structure. Each group of \hh{} is the vertex set of a
+Hanner polytope, a convex body built from segments by products and $\ell_1$ sums
+\citep{hanner1956intersections,hansen1981structure}. In the canonical coordinates, every
+vertex is a ternary vector in $\{-1,0,1\}^\ell$, and the polytope's support function follows
+the tree of its construction. The winning vertex of a group with up to $2^\ell$ vertices
+then costs $\ell$ absolute values and $\ell-1$ additions or comparisons, and no
+multiplications. The winners are sign patterns on subsets of the taps, the codes of
+hyperplane and cross-polytope hashing \citep{charikar2002simhash,andoni2015crosspolytope}.
+Hanner polytopes also have an extremal property: they minimise the volume product among
+unconditional bodies, and an unrefereed 2026 manuscript claims that they are the equality
+cases of the symmetric Mahler conjecture in general \citep{openai2026mahler}. The method does
+not depend on this property (Section~\ref{sec:background}).
+
+A cheaper group is only useful if it does not cost accuracy, and a fast new kernel family
+invites the question of which of its properties matter. We therefore tested a
+non-inferiority hypothesis that we fixed in advance, with two controls matched to the
+Hanner groups in size and sparsity: random ternary groups, and random ternary groups that
+are centrally symmetric like every Hanner polytope.
+
+Our contributions are:
+\begin{itemize}
+\item the Hanner kernel family, with a proof that the winner of a group follows its tree in
+  $O(\ell)$ operations, including an exact rule for ties (Section~\ref{sec:method});
+\item two theory-matched controls that separate the tree structure from ternary weights
+  and from central symmetry (Section~\ref{sec:controls});
+\item a pre-registered evaluation on 138 UCR and UEA datasets with 30 resamples each, a
+  non-inferiority decision rule and a controlled single-core timing protocol
+  (Section~\ref{sec:protocol});
+\item a NumPy reference implementation, Numba kernels that reproduce it bit for bit,
+  aeon-compatible estimators, and the full per-case results (Section~\ref{sec:reproducibility}).
+\end{itemize}
+
+The pre-registered hypothesis is accepted (Section~\ref{sec:results}). \hh{} is practically
+equivalent to Hydra in accuracy, $-0.06$ points with a posterior probability of 0.988 of
+being not worse, and to the matched controls. Its single-core transform is $11.2\times$
+faster than Hydra's, and it needs $23.8\times$ less memory. The result is one of
+equivalence, not improvement, and it has limits: on the UEA datasets alone, \emph{not
+worse} is not shown, the gap to Hydra on balanced accuracy and macro-F1 is inconclusive,
+and MultiRocket and HIVE-COTE~2.0 remain more accurate. The tree structure contributes
+speed, not accuracy. Section~\ref{sec:background} reviews Hydra and Hanner polytopes,
+Section~\ref{sec:related} discusses related work, and Section~\ref{sec:discussion} the
+limitations.

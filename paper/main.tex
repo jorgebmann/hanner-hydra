@@ -1,0 +1,82 @@
+% Hanner-Hydra paper.
+%
+% Portable article-class source that arXiv compiles as is. For the journal submission
+% (target: Data Mining and Knowledge Discovery), switch to Springer Nature's sn-jnl class
+% (LaTeX template v3.1); see README.md. Keep the section files free of class-specific
+% macros so that the switch only touches this file.
+\documentclass[11pt]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[a4paper,margin=2.5cm]{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage[section]{placeins} % keep floats inside their section
+\usepackage[numbers,sort&compress]{natbib}
+\usepackage[hidelinks]{hyperref}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}[theorem]{Proposition}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+
+% Notation shared by all sections.
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\linf}{\oplus_\infty}
+\newcommand{\lone}{\oplus_1}
+\newcommand{\hh}{Hanner-Hydra}
+
+% Outline markers: visible in the draft, removed before submission.
+\newcommand{\paperoutline}[1]{\par\noindent\textcolor{gray}{\textsf{[Outline] #1}}\par}
+\newcommand{\todo}[1]{\textcolor{red}{\textsf{[TODO: #1]}}}
+
+\title{Hanner-Hydra: Multiplication-Free Competing Kernels from Hanner Polytopes
+  for Time Series Classification}
+\author{J\"org Bahlmann\\\small Independent Researcher, L\"ubeck, Germany\\\small \href{mailto:joerg@bahlmann.ai}{joerg@bahlmann.ai}\\\small ORCID \href{https://orcid.org/0009-0009-6497-6823}{0009-0009-6497-6823}}
+\date{Draft, \today}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Hydra classifies time series by letting random convolutional kernels compete in groups and
+counting the winners. Finding the winner of a group of $k$ kernels of length $\ell$ costs
+$k\ell$ multiplications per time step. We replace each group by the vertex set of a Hanner
+polytope, a convex body built from segments by products and $\ell_1$ sums. Its vertices are
+ternary, and its support function follows the tree of its construction, so the winner of a
+group with up to $2^\ell$ vertices costs $\ell$ absolute values and $\ell-1$ additions or
+comparisons, with no multiplication. We evaluated \hh{} in a pre-registered study on 112
+UCR and 26 UEA datasets with 30 resamples each, against Hydra and two theory-matched
+ternary controls, with a Bayesian non-inferiority rule (ROPE $\pm0.5$ accuracy points).
+\hh{} is practically equivalent to Hydra in accuracy ($-0.06$ points, posterior
+probability 0.988 of being not worse). Its single-core transform is $11.2\times$ faster
+(95\% interval 10.2--12.0) and needs $23.8\times$ less memory. The result is equivalence,
+not improvement: on the UEA datasets alone, \emph{not worse} is not shown. \hh{} is
+equivalent to both controls, so the tree structure contributes speed, $3.8\times$ over a
+dense ternary evaluation of the same groups, but not accuracy. The code, the
+pre-registration and all per-case results are public.
+\end{abstract}
+
+\input{sections/introduction}
+\input{sections/background}
+\input{sections/method}
+\input{sections/protocol}
+\input{sections/results}
+\input{sections/related}
+\input{sections/discussion}
+\input{sections/reproducibility}
+
+\section*{Competing interests}
+The author intends to offer commercial products and services based on the method described
+here. No patent has been filed or is planned; the reference implementation is open source
+(BSD-3-Clause) and the results are released under CC BY 4.0.
+
+\section*{Funding}
+This work received no specific funding.
+
+\bibliographystyle{plainnat}
+\bibliography{references}
+
+\end{document}

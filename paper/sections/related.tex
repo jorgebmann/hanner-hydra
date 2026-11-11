@@ -1,0 +1,67 @@
+\section{Related work}
+\label{sec:related}
+
+\paragraph{Random convolutional kernels.} ROCKET classifies time series with a linear
+model on features pooled from thousands of random convolutional kernels
+\citep{dempster2020rocket}. MiniRocket replaces the random kernels by a small fixed set with
+two weight values \citep{dempster2021minirocket}, MultiRocket adds pooling operators and the
+first difference \citep{tan2022multirocket}, and Hydra organises random kernels into
+competing groups \citep{dempster2023hydra}. QUANT, an interval method, classifies quantiles
+over fixed intervals with extremely randomised trees, in less than 15 minutes of
+single-core compute for 142 UCR datasets \citep{dempster2024quant}. In the
+most recent bake-off, the concatenation of MultiRocket and Hydra features and the HIVE-COTE
+2.0 ensemble were the most accurate methods on the UCR archive
+\citep{middlehurst2024bakeoff,middlehurst2021hc2}. Two lines of work reduce the cost of
+these transforms after the fact: pruning kernels or features, which can remove most of them
+with little loss of accuracy \citep{salehinejad2022srocket,uribarri2024detach}, and
+combining fast transforms with stronger models, such as stacked ensembles of Hydra and
+QUANT \citep{maniar2025metalearning} or tabular in-context learners on ROCKET features
+\citep{orourke2026rocketpfn}. \hh{} takes a different route: it changes what a group is, so
+that the cost of finding a group's winner no longer grows with its size. Its features could
+enter the same combinations.
+
+\paragraph{Low-precision and edge variants.} The closest work is NanoHydra
+\citep{cioflan2025nanohydra}, which runs Hydra on a microcontroller with binary kernels
+($\pm1$), integer arithmetic and a quantised linear classifier. Its groups remain random
+sets of kernels that are evaluated one by one. In its own evaluation on the UCR archive,
+NanoHydra averages 83.81\% against 85.31\% for Hydra (Hydra's number as reported by
+\citet{schaefer2023weasel2}), although its numbers are the best of several runs per
+dataset. The two approaches address different costs: NanoHydra makes each kernel cheaper,
+and \hh{} makes the whole group cheaper. A Hanner cube group contains all $2^\ell$ sign
+vectors on its taps and finds the winner in $O(\ell)$ operations; a group of $k$ random
+sign vectors needs $k$ dot products. Combining Hanner groups with NanoHydra's integer
+pipeline is a natural next step. More broadly, ternary and binary networks
+\citep{li2016ternary,rastegari2016xnor} and adder networks \citep{chen2020addernet} reduce
+the cost of each learned weight; we do not learn weights and instead remove the dependence
+on the number of kernels in a group.
+
+\paragraph{Dictionary and pattern-based methods.} Dictionary methods classify series by
+counting symbolic words, from SAX \citep{lin2007sax} to WEASEL~2.0
+\citep{schaefer2023weasel2}, which is about as accurate as MiniRocket. Hanner features are
+counts of words too: sign patterns on subsets of taps, weighted by the response. Sign
+patterns of neighbouring samples are also the basis of one-dimensional local binary
+patterns \citep{kaya2014lbp}. Ordinal patterns \citep{bandt2002permutation} are related but
+different: they record the rank order of the samples in a window, not their signs.
+
+\paragraph{Hashing and max-affine units.} The winner of a cube group is a sign pattern, the
+code of hyperplane hashing \citep{charikar2002simhash}, and the winner of a cross-polytope
+group is a signed coordinate, the code of cross-polytope hashing
+\citep{andoni2015crosspolytope}; Section~\ref{sec:interpretation} makes this precise.
+Winner-take-all hashing records the index of the largest of several coordinates
+\citep{yagnik2011wta}, which is what Hydra's counts record for kernel responses. A group's
+largest response, the support function of a polytope, is also the output of a maxout unit;
+maxout polytopes \citep{balakin2025maxout} study the polytopes that networks of such units
+define. We found no work that chooses competing kernels for the structure of their
+polytope, or that finds a group's winner faster than by evaluating each kernel.
+
+\paragraph{Evaluation.} We follow the bake-off protocol of 30 stratified resamples
+\citep{ruiz2021multivariate,middlehurst2024bakeoff} on the UCR and UEA archives
+\citep{dau2019ucr,bagnall2018uea}, with aeon's implementations and published results
+\citep{middlehurst2024aeon}. Our primary test is the Bayesian signed-rank test of
+\citet{benavoli2017bayesian}, which turns a margin of practical equivalence into a decision
+rule, with Wilcoxon--Holm tests and critical-difference diagrams
+\citep{demsar2006statistical} as secondary analyses; pairwise comparisons also avoid the
+dependence of critical-difference diagrams on the set of compared methods
+\citep{ismailfawaz2023mcm}. The UCR and UEA datasets are small, which favours
+low-variance methods; the MONSTER collection \citep{dempster2025monster} offers large
+datasets on which the speed of \hh{} would matter more.
