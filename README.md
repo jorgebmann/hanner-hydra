@@ -2,6 +2,9 @@
 
 **Hanner-polytope ternary kernel dictionaries for Hydra-style time series classification.**
 
+Code: [10.5281/zenodo.24142926](https://doi.org/10.5281/zenodo.24142926) (all versions) ·
+Results: [10.5281/zenodo.24142209](https://doi.org/10.5281/zenodo.24142209)
+
 > **Research question.** Can ternary Hanner-polytope kernel groups match `Hydra`'s accuracy
 > at lower CPU cost?
 

@@ -14,6 +14,7 @@ authors:
     affiliation: "Independent Researcher, Lübeck, Germany"
     email: joerg@bahlmann.ai
     orcid: "https://orcid.org/0009-0009-6497-6823"
+doi: 10.5281/zenodo.24142926
 repository-code: "https://github.com/jorgebmann/hanner-hydra"
 license: BSD-3-Clause
 keywords:

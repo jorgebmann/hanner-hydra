@@ -47,8 +47,10 @@ should need to change: keep class-specific macros out of `sections/`.
 
 ## Before the arXiv submission
 
-- Get a Zenodo DOI for the code and cite the code and the pre-registration by DOI. The
-  results have one: 10.5281/zenodo.24142209 (`bahlmann2026results`, 2026-11-11).
+- Done (2026-11-11): Zenodo DOIs for the code, 10.5281/zenodo.24142927 (v0.1.0,
+  `bahlmann2026code`, which also holds the pre-registration; concept DOI for all versions
+  10.5281/zenodo.24142926), and for the results, 10.5281/zenodo.24142209
+  (`bahlmann2026results`).
 - Resolve every `VERIFY` note in `references.bib`.
 - Remove all `\paperoutline` and `\todo` markers.
 - Use the paper's author line (Independent Researcher, Lübeck; ORCID 0009-0009-6497-6823) in
