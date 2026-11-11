@@ -1,0 +1,32 @@
+{
+  "title": "Hanner-Hydra: multiplication-free competing kernels from Hanner polytopes for time series classification",
+  "upload_type": "software",
+  "description": "<p>Code for Hanner-Hydra, a variant of the Hydra time series classifier in which each group of competing convolutional kernels is the vertex set of a Hanner polytope. The vertices are ternary and the support function follows the cotree of the polytope, so the winner of a group with up to 2<sup>&#8467;</sup> vertices costs &#8467; absolute values and &#8467;&minus;1 additions or comparisons, with no multiplication.</p><p>The repository contains the NumPy reference implementation, the Numba kernels (tested to reproduce the reference bit for bit), aeon-compatible estimators, the pre-registration of the primary endpoint, and every experiment, analysis and paper-table script. The per-case benchmark results are published separately under CC BY 4.0 (GitHub release <code>results-v1</code>).</p>",
+  "creators": [
+    {
+      "name": "Bahlmann, Jörg",
+      "affiliation": "Independent Researcher, Lübeck, Germany",
+      "orcid": "0009-0009-6497-6823"
+    }
+  ],
+  "license": "BSD-3-Clause",
+  "access_right": "open",
+  "keywords": [
+    "time series classification",
+    "random convolutional kernels",
+    "Hydra",
+    "Hanner polytopes",
+    "ternary kernels",
+    "multiplication-free",
+    "aeon",
+    "pre-registration"
+  ],
+  "related_identifiers": [
+    {
+      "identifier": "https://github.com/jorgebmann/hanner-hydra/releases/tag/results-v1",
+      "relation": "isSupplementedBy",
+      "resource_type": "dataset",
+      "scheme": "url"
+    }
+  ]
+}

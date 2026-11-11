@@ -1,0 +1,26 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it using the metadata below."
+type: software
+title: "Hanner-Hydra: multiplication-free competing kernels from Hanner polytopes for time series classification"
+abstract: >-
+  Code for Hanner-Hydra, a variant of the Hydra time series classifier in which each
+  group of competing convolutional kernels is the vertex set of a Hanner polytope, so
+  that the winner of a group is found without multiplications. Includes the NumPy
+  reference implementation, Numba kernels, aeon-compatible estimators, the
+  pre-registration and all experiment and analysis scripts.
+authors:
+  - family-names: Bahlmann
+    given-names: Jörg
+    affiliation: "Independent Researcher, Lübeck, Germany"
+    email: joerg@bahlmann.ai
+    orcid: "https://orcid.org/0009-0009-6497-6823"
+repository-code: "https://github.com/jorgebmann/hanner-hydra"
+license: BSD-3-Clause
+keywords:
+  - time series classification
+  - random convolutional kernels
+  - Hydra
+  - Hanner polytopes
+  - ternary kernels
+  - multiplication-free
+  - aeon

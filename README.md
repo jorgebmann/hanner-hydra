@@ -69,7 +69,8 @@ and every decision is in [docs/development-log.md](docs/development-log.md).
 - [x] Results and scripts: the GitHub release [`results-v1`](https://github.com/jorgebmann/hanner-hydra/releases/tag/results-v1) holds
   `hanner-hydra-results-v1.tar.gz` (built by `experiments/release.py`): per-resample
   results, per-case predictions, timing, memory, secondary analyses and ablations, under
-  CC BY 4.0. Check out the tag, extract the archive in the repository root and the analysis
+  CC BY 4.0, archived on Zenodo as
+  [10.5281/zenodo.24142209](https://doi.org/10.5281/zenodo.24142209). Check out the tag, extract the archive in the repository root and the analysis
   scripts run on it unchanged ([contents](docs/results-release.md)).
 
 Earlier steps:

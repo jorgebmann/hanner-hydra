@@ -7,7 +7,7 @@ name = "hanner-hydra"
 dynamic = ["version"]
 description = "Hanner-polytope ternary kernel dictionaries for Hydra-style time series classification"
 readme = "README.md"
-authors = [{ name = "Jörg Bahlmann", email = "jbahlmann.dev@gmail.com" }]
+authors = [{ name = "Jörg Bahlmann", email = "joerg@bahlmann.ai" }]
 license = "BSD-3-Clause"
 license-files = ["LICENSE"]
 requires-python = ">=3.11"

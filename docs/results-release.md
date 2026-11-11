@@ -152,7 +152,10 @@ purpose, provided you give credit, link to the licence and say if you made chang
 Please cite them as:
 
 > Bahlmann, J. (2026). *Hanner-Hydra benchmark results* (version results-v1) [Data set].
-> https://github.com/jorgebmann/hanner-hydra/releases/tag/results-v1
+> Zenodo. https://doi.org/10.5281/zenodo.24142209
+
+The same archive is attached to the GitHub release
+[`results-v1`](https://github.com/jorgebmann/hanner-hydra/releases/tag/results-v1).
 
 The code that produced them, in the `hanner-hydra` repository, is under the BSD 3-Clause
 licence (`LICENSE` there). The UCR/UEA test labels in the prediction files come from those

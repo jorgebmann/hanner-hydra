@@ -16,7 +16,7 @@ from hanner_hydra.transform import HannerHydraTransform, make_classifier
 if TYPE_CHECKING:
     from hanner_hydra.estimators import HannerHydraClassifier, HannerHydraTransformer
 
-__version__ = "0.0.1"
+__version__ = "0.1.0"
 
 _AEON_ESTIMATORS = ("HannerHydraClassifier", "HannerHydraTransformer")
 

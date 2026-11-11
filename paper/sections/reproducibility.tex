@@ -2,21 +2,22 @@
 \label{sec:reproducibility}
 
 Everything needed to check or extend the results is public.
-\todo{Public repository URL and Zenodo DOIs for the code and the results before the arXiv
-submission.}
 
-\paragraph{Code.} The \texttt{hanner-hydra} repository (BSD-3-Clause) contains the NumPy
+\paragraph{Code.} The \texttt{hanner-hydra} repository
+(\url{https://github.com/jorgebmann/hanner-hydra}, BSD-3-Clause) contains the NumPy
 reference implementation, the Numba kernels with tests that they reproduce the reference bit
 for bit, the aeon-compatible estimators, and every experiment and analysis script. The
 dependency versions are pinned (aeon 1.6.0, NumPy 2.3.5, scikit-learn 1.9.1, Numba 0.63.1,
 PyTorch 2.15.0).
+\todo{Zenodo DOI of the code release.}
 
 \paragraph{Pre-registration.} The protocol of Section~\ref{sec:protocol} is the document
 \texttt{docs/preregistration.md}, together with the code of the harnesses. Its public
 edition differs from the frozen document only in wording (references to internal
 planning documents) and in a section listing the one deviation after the freeze.
 
-\paragraph{Results.} The release \texttt{results-v1} (CC BY 4.0) holds the per-resample
+\paragraph{Results.} The release \texttt{results-v1} (CC BY 4.0), archived on Zenodo
+\citep{bahlmann2026results}, holds the per-resample
 results of all arms and ablations, all per-case test predictions, the timing passes, the
 memory measurements and the secondary analyses, with a SHA-256 manifest. Extracted in a
 checkout of the repository, it lets the analysis scripts reproduce the results without
